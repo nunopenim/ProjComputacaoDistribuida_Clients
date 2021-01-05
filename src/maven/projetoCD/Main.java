@@ -1,6 +1,7 @@
 package maven.projetoCD;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Main {
 	
@@ -79,6 +80,23 @@ public class Main {
         		if ("0".equals(selector)) {
         			menushown = false;
         		}
+        		else if ("1".equals(selector)) {
+        			System.out.println(SOAPUtils.listAllVotingStuff());
+        		}
+        		else if ("5".equals(selector)) {
+        			System.out.println("Numero total de votos: " + SOAPUtils.totalVotos());
+        		}
+        		else if ("10".equals(selector)) {
+        			System.out.print("Introduza o ID LDAP do Utilizador> ");
+        			String ldapID = sc.nextLine();
+        			boolean successAdding = SOAPUtils.add_user(ldapID);
+        			if (successAdding) {
+        				System.out.println("Utilizador adicionado com sucesso");
+        			}
+        			else {
+        				System.out.println("Falha ao adicionar o utilizador");
+        			}
+        		}
         		else if ("99".equals(selector)) {
         			System.out.println("A sair...");
         			running = false;
@@ -96,6 +114,39 @@ public class Main {
         		String selector = sc.nextLine();
         		if ("0".equals(selector)) {
         			menushown = false;
+        		}
+        		else if ("1".equals(selector)) {
+        			System.out.println(SOAPUtils.listAllVotingStuff());
+        		}
+        		else if ("3".equals(selector)) {
+        			if (SOAPUtils.jaVotou(loggeduser)) {
+        				System.out.println("Você já votou!");
+        			}
+        			else {
+        				System.out.print("Voto? ");
+            			String voteID = sc.nextLine();
+            			String item = SOAPUtils.getVotingItem(voteID);
+            			if (item == null) {
+            				System.out.println("Este item não existe");
+            			}
+            			else {
+            				String[] parts = item.split(Pattern.quote("|"));
+            				System.out.print("Confirma voto em " + parts[1] + " (S/N)? ");
+            				String confirma = sc.nextLine();
+            				if ("S".equals(confirma)) {
+            					boolean voteResult = SOAPUtils.voteFunction(loggeduser, voteID);
+            					if (voteResult) {
+            						System.out.println("Ok, votou em " + parts[1]);
+            					}
+            					else {
+            						System.out.println("Ocorreu um erro ao votar em " + parts[1] + ". Verifique com o administrador se a sua conta pode votar.");
+            					}
+            				}
+            			}
+        			}
+        		}
+        		else if ("4".equals(selector)) {
+        			System.out.println("Numero total de votos: " + SOAPUtils.totalVotos());
         		}
         		else if ("99".equals(selector)) {
         			System.out.println("A sair...");
